@@ -28,12 +28,16 @@ func loadPage(title string) (*Page, error) {
 	return &Page{Title: title, Body: body}, nil
 }
 
+func renderTemplate(w http.ResponseWriter, tmpl string, page *Page) {
+	t, _ := template.ParseFiles("templates/" + tmpl + ".html")
+	t.Execute(w, page)
+}
+
 func viewHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/view/"):]
 	page, _ := loadPage(title)
 
-	t, _ := template.ParseFiles("templates/view.html")
-	t.Execute(w, page)
+	renderTemplate(w, "view", page)
 }
 
 func editHandler(w http.ResponseWriter, r *http.Request) {
@@ -43,8 +47,7 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 		page = &Page{Title: title}
 	}
 
-	t, _ := template.ParseFiles("templates/edit.html")
-	t.Execute(w, page)
+	renderTemplate(w, "edit", page)
 }
 
 func saveHandler(w http.ResponseWriter, r *http.Request) {
