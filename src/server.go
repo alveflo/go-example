@@ -35,7 +35,10 @@ func renderTemplate(w http.ResponseWriter, tmpl string, page *Page) {
 
 func viewHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/view/"):]
-	page, _ := loadPage(title)
+	page, err := loadPage(title)
+	if err != nil {
+		http.Redirect(w, r, "/edit/"+title, http.StatusFound)
+	}
 
 	renderTemplate(w, "view", page)
 }
@@ -51,7 +54,13 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func saveHandler(w http.ResponseWriter, r *http.Request) {
+	title := r.URL.Path[len("/save/"):]
+	body := r.FormValue("body")
 
+	p := &Page{Title: title, Body: []byte(body)}
+	p.save()
+
+	http.Redirect(w, r, "/view/"+title, http.StatusFound)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
