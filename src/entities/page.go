@@ -12,6 +12,8 @@ type Page struct {
 
 var path = "./data/"
 
+// Save Page
+// Saves page into /data/{title}
 func (p *Page) Save() error {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		os.Mkdir(path, 0600)
@@ -21,6 +23,8 @@ func (p *Page) Save() error {
 	return ioutil.WriteFile(filename, p.Body, 0600)
 }
 
+// LoadPage loads page from /data/{title}.
+// If file not exists, return nil
 func LoadPage(title string) (*Page, error) {
 	filename := path + title + ".txt"
 	body, err := ioutil.ReadFile(filename)

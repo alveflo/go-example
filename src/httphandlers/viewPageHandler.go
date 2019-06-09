@@ -7,6 +7,7 @@ import (
 	"../templates"
 )
 
+// ViewPageHandler renders view.html template
 func ViewPageHandler(w http.ResponseWriter, r *http.Request, title string) {
 	page, err := entities.LoadPage(title)
 	if err != nil {

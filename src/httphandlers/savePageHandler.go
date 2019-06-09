@@ -6,6 +6,7 @@ import (
 	"../entities"
 )
 
+// SavePageHandler saves or updates a provided page
 func SavePageHandler(w http.ResponseWriter, r *http.Request, title string) {
 	body := r.FormValue("body")
 
