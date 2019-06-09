@@ -2,7 +2,7 @@
 <img src="https://res.cloudinary.com/toughbyte/image/upload/b_transparent,c_pad,g_center,h_230,w_230/v1482173747/oarnidlqs1dcxqifb6g7.png"><br/>
 <h1 align="center">Let's go!</h1>
 <p align="center">
-Example web application written in [Go](https://golang.org/) for learning purposes
+Example web application written in <a href="https://golang.org/">Go</a> for learning purposes
 </p>
 </p>
 <br/>
