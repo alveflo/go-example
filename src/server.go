@@ -8,6 +8,11 @@ import (
 	"net/http"
 )
 
+var templates = template.Must(template.ParseFiles(
+	"templates/edit.html",
+	"templates/view.html",
+))
+
 type Page struct {
 	Title string
 	Body  []byte // byte slices: https://blog.golang.org/go-slices-usage-and-internals
@@ -29,15 +34,10 @@ func loadPage(title string) (*Page, error) {
 }
 
 func renderTemplate(w http.ResponseWriter, tmpl string, page *Page) {
-	t, err := template.ParseFiles("templates/" + tmpl + ".html")
+	err := templates.ExecuteTemplate(w, "templates/"+tmpl+".html", page)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
-	}
-
-	err = t.Execute(w, page)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
