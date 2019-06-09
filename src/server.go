@@ -37,7 +37,7 @@ func loadPage(title string) (*Page, error) {
 }
 
 func renderTemplate(w http.ResponseWriter, tmpl string, page *Page) {
-	err := templates.ExecuteTemplate(w, "templates/"+tmpl+".html", page)
+	err := templates.ExecuteTemplate(w, tmpl+".html", page)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
