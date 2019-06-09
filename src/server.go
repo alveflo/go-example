@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+
+	"./entities"
 )
 
 var validPath = regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
@@ -15,27 +17,17 @@ var templates = template.Must(template.ParseFiles(
 	"templates/view.html",
 ))
 
-type Page struct {
-	Title string
-	Body  []byte // byte slices: https://blog.golang.org/go-slices-usage-and-internals
-}
-
-func (p *Page) save() error {
-	filename := p.Title + ".txt"
-	return ioutil.WriteFile(filename, p.Body, 0600)
-}
-
-func loadPage(title string) (*Page, error) {
+func loadPage(title string) (*entities.Page, error) {
 	filename := title + ".txt"
 	body, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Page{Title: title, Body: body}, nil
+	return &entities.Page{Title: title, Body: body}, nil
 }
 
-func renderTemplate(w http.ResponseWriter, tmpl string, page *Page) {
+func renderTemplate(w http.ResponseWriter, tmpl string, page *entities.Page) {
 	err := templates.ExecuteTemplate(w, tmpl+".html", page)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -55,7 +47,7 @@ func viewHandler(w http.ResponseWriter, r *http.Request, title string) {
 func editHandler(w http.ResponseWriter, r *http.Request, title string) {
 	page, err := loadPage(title)
 	if err != nil {
-		page = &Page{Title: title}
+		page = &entities.Page{Title: title}
 	}
 
 	renderTemplate(w, "edit", page)
@@ -64,8 +56,8 @@ func editHandler(w http.ResponseWriter, r *http.Request, title string) {
 func saveHandler(w http.ResponseWriter, r *http.Request, title string) {
 	body := r.FormValue("body")
 
-	p := &Page{Title: title, Body: []byte(body)}
-	err := p.save()
+	p := &entities.Page{Title: title, Body: []byte(body)}
+	err := p.Save()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
